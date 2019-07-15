@@ -6,13 +6,85 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <ImageView
+        android:id="@+id/introImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:cropToPadding="false"
+        android:scaleType="centerCrop"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/welcome" />
+
+    <TextView
+        android:id="@+id/introText"
+        android:layout_width="343dp"
+        android:layout_height="125dp"
+        android:gravity="center"
+        android:text="Mausam"
+        android:textColor="#FFFFFF"
+        android:textSize="75sp"
+        android:textStyle="bold|italic"
+        android:visibility="invisible"
+        app:fontFamily="@font/satisfy"
+        app:layout_constraintBottom_toTopOf="@+id/introImage"
+        app:layout_constraintEnd_toStartOf="@+id/introImage"
+        app:layout_constraintStart_toEndOf="@+id/introImage"
+        app:layout_constraintTop_toBottomOf="@+id/introImage"
+        app:layout_constraintVertical_bias="0.526" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/weatherLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/inputView"
+            android:layout_width="329dp"
+            android:layout_height="46dp"
+            android:ems="10"
+            android:hint="Enter the name of city"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.327" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="246dp"
+            android:onClick="getWeather"
+            android:text="Submit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/weatherView"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="@+id/weatherView"
+            app:layout_constraintTop_toBottomOf="@+id/weatherView" />
+
+        <TextView
+            android:id="@+id/weatherView"
+            android:layout_width="281dp"
+            android:layout_height="125dp"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toTopOf="@+id/button"
+            app:layout_constraintEnd_toEndOf="@+id/inputView"
+            app:layout_constraintStart_toStartOf="@+id/inputView"
+            app:layout_constraintTop_toBottomOf="@+id/inputView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
