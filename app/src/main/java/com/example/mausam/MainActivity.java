@@ -5,23 +5,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
-
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,13 +41,12 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    LocationManager locationManager;
-    LocationListener locationListener;
-
+    FusedLocationProviderClient fusedLocationProviderClient;
+    LocationRequest locationRequest;
+    LocationCallback locationCallback;
     // For Debug
     String placeName;
     String []showDetails = {"Invalid","Invalid","-","-","-","-","-","-","-"};
-
      /*
         0)Weather main
         1)Weather descprition
@@ -55,20 +58,23 @@ public class MainActivity extends AppCompatActivity {
         7)Wind direction (degrees)
         8)Current Temp (f)
 
-        I have set location update time to 15mins and Distance to 10km
+        Location will be updated after 15mins and 10km displacement
      */
 
-     // Response for Request
+    // Response for Request
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,900000,10000,locationListener);
+                buildlocationRequest();
+                buildLocationCallback();
+                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+                fusedLocationProviderClient.requestLocationUpdates(locationRequest,locationCallback, Looper.myLooper());
             }
-        }
+        }else
+            finish();
     }
-
     public class DownloadTask extends AsyncTask<String,Void,String> {
         @Override
         protected String doInBackground(String...urls) {
@@ -115,9 +121,11 @@ public class MainActivity extends AppCompatActivity {
                 showDetails[7] = windObject.getString("deg");
                 showDetails[8] = mainObject.getString("temp");
                 placeName = jsonObject.getString("name");
-                /*for(int i=0;i<9;i++){
+        /*        for(int i=0;i<9;i++){
                     Log.i("info",showDetails[i]);
-                }*/
+                }
+                Log.i("info",placeName);
+         */
                 placeWeatherInfo();
             }
             catch (Exception e){
@@ -134,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
         if(location == null){
             return;
         }
+      //  Log.i("info",Double.toString(location.getLatitude())+" "+location.getLongitude());
         String jsonOutput = "";
         try {
             // API OpenWeatherMap
@@ -168,35 +177,6 @@ public class MainActivity extends AppCompatActivity {
         introText.setX(-800);
         introText.animate().translationX(5).setDuration(1000);
 
-        // Location Service
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                getWeather(location);
-            }
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
-        };
-        //Request for Location
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
-        }else{
-            getWeather(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,900000,10000,locationListener);
-        }
         // Intro starts
         new CountDownTimer(2000,2000){
             @Override
@@ -215,5 +195,35 @@ public class MainActivity extends AppCompatActivity {
                     weatherLayout.setBackground(ContextCompat.getDrawable(getApplicationContext(),R.drawable.night_gradient));
             }
         }.start();
+
+        //Request for Location
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+        }else{
+            buildlocationRequest();
+            buildLocationCallback();
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest,locationCallback, Looper.myLooper());
+        }
     }
+
+    private void buildLocationCallback() {
+        locationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                for(Location location : locationResult.getLocations()){
+                    getWeather(location);
+                }
+            }
+        };
+    }
+
+    private void buildlocationRequest() {
+        locationRequest = new LocationRequest();
+        locationRequest.setSmallestDisplacement(10000);
+        locationRequest.setInterval(15*60*1000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+    }
+
 }
