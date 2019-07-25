@@ -6,17 +6,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,27 +34,28 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-//http://api.openweathermap.org/data/2.5/weather?q=mumbai&appid=938bb3a45ec1e77e05c50788aeaaf94f
+//https://api.weatherbit.io/v2.0/current?&lat=28&lon=77&key=822648bc2f54494c9af3ed8169801f76
 
 public class MainActivity extends AppCompatActivity {
 
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
     LocationCallback locationCallback;
+    ImageView iconWeather;
     // For Debug
     String placeName;
-    String []showDetails = {"Invalid","Invalid","-","-","-","-","-","-","-"};
+    String []showDetails = {"Invalid","Invalid","-","-","-","-","-","-","-","-"};
      /*
         0)Weather main
-        1)Weather descprition
-        2)Min Tempature (f)
-        3)Max Tempature (f)
-        4)humidity percentage
-        5)Pressure (hPa)
-        6)Wind speed (m/s)
-        7)Wind direction (degrees)
-        8)Current Temp (f)
-
+        1)Pressure (hPa)
+        2)Wind speed (m/s)
+        3)Wind direction
+        4)Current Temp (c)
+        5)Weather icon
+        6)Visibility
+        7)UV Index
+        8)Air Quality Index
+        9)Relative Humidity
         Location will be updated after 15mins and 10km displacement
      */
 
@@ -105,54 +103,70 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
             try{
                 JSONObject jsonObject = new JSONObject(s);
-                String weatherString = jsonObject.getString("weather");
-                JSONArray jsonArray = new JSONArray(weatherString);
-                JSONObject mainObject = new JSONObject(jsonObject.get("main").toString());
-                JSONObject weatherObject = new JSONObject(jsonArray.get(0).toString());
-                JSONObject windObject = new JSONObject(jsonObject.get("wind").toString());
-
-                showDetails[0] = weatherObject.getString("main");
-                showDetails[1] = weatherObject.getString("description");
-                showDetails[2] = mainObject.getString("temp_min");
-                showDetails[3] = mainObject.getString("temp_max");
-                showDetails[4] = mainObject.getString("humidity");
-                showDetails[5] = mainObject.getString("pressure");
-                showDetails[6] = windObject.getString("speed");
-                showDetails[7] = windObject.getString("deg");
-                showDetails[8] = mainObject.getString("temp");
-                placeName = jsonObject.getString("name");
-        /*        for(int i=0;i<9;i++){
+                JSONArray dataArray = new JSONArray(jsonObject.getString("data"));
+                jsonObject = dataArray.getJSONObject(0);
+                JSONObject weatherObject = new JSONObject(jsonObject.get("weather").toString());
+                showDetails[0] = weatherObject.getString("description");
+                showDetails[1] = jsonObject.getString("pres");
+                showDetails[2] = jsonObject.getString("wind_spd");
+                showDetails[3] = jsonObject.getString("wind_cdir_full");
+                showDetails[4] = jsonObject.getString("temp");
+                showDetails[5] = weatherObject.getString("icon");
+                showDetails[6] = jsonObject.getString("vis");
+                showDetails[7] = jsonObject.getString("uv");
+                showDetails[8] = jsonObject.getString("aqi");
+                showDetails[9] = jsonObject.getString("rh");
+                placeName = jsonObject.getString("city_name");
+                /*for (int i=0;i<=9;i++){
                     Log.i("info",showDetails[i]);
-                }
-                Log.i("info",placeName);
-         */
+                }*/
                 placeWeatherInfo();
             }
             catch (Exception e){
                 e.printStackTrace();
+                finish();
             }
         }
     }
-    public void placeWeatherInfo(){
-        ((TextView)findViewById(R.id.tempView)).setText(showDetails[8]);
-        ((TextView)findViewById(R.id.weatherTitle)).setText(showDetails[0]);
-        ((TextView)findViewById(R.id.locationView)).setText(placeName);
+    public String format(String s){
+        float val = Float.parseFloat(s);
+        val = (float) (Math.floor(val*100))/100;
+        return Float.toString(val);
     }
-    public void getWeather(Location location){
+    public void placeWeatherInfo(){
+        showDetails[4] = Integer.toString((int)Double.parseDouble(showDetails[4]));
+        ((TextView)findViewById(R.id.tempView)).setText(showDetails[4]);
+        ((TextView)findViewById(R.id.placeName)).setText(placeName);
+        ((TextView)findViewById(R.id.weatherTitle)).setText(showDetails[0]);
+        ((TextView)findViewById(R.id.windSpeed)).setText(format(showDetails[2])+" m/s");
+        ((TextView)findViewById(R.id.pressure)).setText(format(showDetails[1]));
+        ((TextView)findViewById(R.id.UVIndex)).setText(showDetails[7]);
+        ((TextView)findViewById(R.id.airQuality)).setText(showDetails[8]);
+        ((TextView)findViewById(R.id.visibility)).setText(format(showDetails[6]));
+        ((TextView)findViewById(R.id.humidity)).setText(showDetails[9]);
+        showDetails[5] = "@drawable/"+showDetails[5];
+        int imageResource = getResources().getIdentifier(showDetails[5], null, getPackageName());
+        Drawable drawable = ContextCompat.getDrawable(this, imageResource);
+        iconWeather.setImageDrawable(drawable);
+        iconWeather.setVisibility(View.VISIBLE);
+
+    }
+    public void getWeather(Location location) {
         if(location == null){
             return;
         }
       //  Log.i("info",Double.toString(location.getLatitude())+" "+location.getLongitude());
         String jsonOutput = "";
         try {
-            // API OpenWeatherMap
+            // API WeatherBit.io
             DownloadTask task = new DownloadTask();
-            jsonOutput = task.execute("http://api.openweathermap.org/data/2.5/weather?lat="+location.getLatitude()+"&lon="+location.getLongitude()+"&appid=938bb3a45ec1e77e05c50788aeaaf94f").get();
+            jsonOutput = task.execute("https://api.weatherbit.io/v2.0/current?&lat="+location.getLatitude()+"&lon="+location.getLongitude()+"&key=822648bc2f54494c9af3ed8169801f76").get();
             task.onPostExecute(jsonOutput);
             task.cancel(true);
         }
         catch (Exception e){
             e.printStackTrace();
+            finish();
         }
     }
     @Override
@@ -171,6 +185,10 @@ public class MainActivity extends AppCompatActivity {
         final ConstraintLayout weatherLayout = ((ConstraintLayout)findViewById(R.id.weatherLayout));
         weatherLayout.setVisibility(View.INVISIBLE);
 
+        //Hiding Weather icon
+        iconWeather = (ImageView) findViewById(R.id.iconWeather);
+        iconWeather.setVisibility(View.INVISIBLE);
+
         final TextView introText = ((TextView)findViewById(R.id.introText));
         ((ImageView)findViewById(R.id.introImage)).setVisibility(View.VISIBLE);
         introText.setVisibility(View.VISIBLE);
@@ -178,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         introText.animate().translationX(5).setDuration(1000);
 
         // Intro starts
-        new CountDownTimer(2000,2000){
+        new CountDownTimer(4000,4000){
             @Override
             public void onTick(long rem){
             }
