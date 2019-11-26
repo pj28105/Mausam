@@ -14,9 +14,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -140,10 +142,10 @@ public class MainActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.weatherTitle)).setText(showDetails[0]);
         ((TextView)findViewById(R.id.windSpeed)).setText(format(showDetails[2])+" m/s");
         ((TextView)findViewById(R.id.pressure)).setText(format(showDetails[1]));
-        ((TextView)findViewById(R.id.UVIndex)).setText(showDetails[7]);
-        ((TextView)findViewById(R.id.airQuality)).setText(showDetails[8]);
+        ((TextView)findViewById(R.id.UVIndex)).setText(format(showDetails[7]));
+        ((TextView)findViewById(R.id.airQuality)).setText(format(showDetails[8]));
         ((TextView)findViewById(R.id.visibility)).setText(format(showDetails[6]));
-        ((TextView)findViewById(R.id.humidity)).setText(showDetails[9]);
+        ((TextView)findViewById(R.id.humidity)).setText(format(showDetails[9]));
         showDetails[5] = "@drawable/"+showDetails[5];
         int imageResource = getResources().getIdentifier(showDetails[5], null, getPackageName());
         Drawable drawable = ContextCompat.getDrawable(this, imageResource);
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void getWeather(Location location) {
+        Log.i("Update","Updating weather deatails");
         if(location == null){
             return;
         }
@@ -229,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         locationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult(locationResult);
+             //   Log.i("info",locationResult.toString());
                 for(Location location : locationResult.getLocations()){
                     getWeather(location);
                 }
@@ -240,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
     private void buildlocationRequest() {
         locationRequest = new LocationRequest();
         locationRequest.setSmallestDisplacement(10000);
-        locationRequest.setInterval(15*60*1000);
+        locationRequest.setFastestInterval(1*1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 
