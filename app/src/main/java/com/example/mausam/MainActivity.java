@@ -35,7 +35,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-
 //https://api.weatherbit.io/v2.0/current?&lat=28&lon=77&key=822648bc2f54494c9af3ed8169801f76
 
 public class MainActivity extends AppCompatActivity {
