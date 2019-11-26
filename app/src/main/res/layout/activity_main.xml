@@ -45,7 +45,7 @@
         android:background="@drawable/daygradient"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
@@ -89,13 +89,14 @@
         <TextView
             android:id="@+id/weatherTitle"
             android:layout_width="260dp"
-            android:layout_height="88dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:fontFamily="@font/roboto"
             android:text="Thunderstorm with heavy drizzle"
             android:textColor="#fff"
             android:textSize="30sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/placeName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tempView"
@@ -103,17 +104,20 @@
 
         <TextView
             android:id="@+id/placeName"
-            android:layout_width="248dp"
-            android:layout_height="26dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="240dp"
-            android:layout_marginBottom="460dp"
-            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="140dp"
+            android:fontFamily="@font/roboto"
+            android:paddingRight="10dp"
+            android:text="Delhi"
             android:textColor="#fff"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="20sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toTopOf="@+id/tableLayout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/weatherTitle" />
 
         <ImageView
             android:id="@+id/iconWeather"
@@ -135,9 +139,7 @@
             android:id="@+id/tableLayout"
             android:layout_width="358dp"
             android:layout_height="277dp"
-            android:layout_marginStart="55dp"
             android:layout_marginTop="400dp"
-            android:layout_marginEnd="25dp"
             android:layout_marginBottom="54dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -153,13 +155,15 @@
                     android:id="@+id/windSpeed"
                     style="@style/tableCell"
                     android:layout_weight="1"
-                    android:text="123" />
+                    android:text="123"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/pressure"
                     style="@style/tableCell"
                     android:layout_weight="1"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textSize="18sp" />
 
             </TableRow>
 
@@ -172,14 +176,16 @@
                     android:id="@+id/UVIndex"
                     style="@style/tableCell"
                     android:layout_weight="1"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/airQuality"
                     style="@style/tableCell"
                     android:layout_column="1"
                     android:layout_weight="1"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textSize="18sp" />
             </TableRow>
 
             <TableRow
@@ -191,21 +197,25 @@
                     android:id="@+id/visibility"
                     style="@style/tableCell"
                     android:layout_weight="1"
-                    android:text="wwe" />
+                    android:text="wwe"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/humidity"
                     style="@style/tableCell"
                     android:layout_column="1"
                     android:layout_weight="1"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textSize="18sp" />
             </TableRow>
         </TableLayout>
 
         <TextView
             android:id="@+id/windSymbol"
             style="@style/celltophead"
+            android:fontFamily="@font/roboto_medium_italic"
             android:text="Wind speed"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tableLayout"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="@id/tableLayout"
@@ -216,7 +226,9 @@
         <TextView
             android:id="@+id/textView4"
             style="@style/celltophead"
+            android:fontFamily="@font/roboto_medium_italic"
             android:text="Pressure"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tableLayout"
             app:layout_constraintHorizontal_bias="0.674"
             app:layout_constraintLeft_toLeftOf="@id/tableLayout"
@@ -227,7 +239,9 @@
         <TextView
             android:id="@+id/textView5"
             style="@style/celltophead"
+            android:fontFamily="@font/roboto_medium_italic"
             android:text="UV Index"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tableLayout"
             app:layout_constraintHorizontal_bias="0.003"
             app:layout_constraintLeft_toLeftOf="@id/tableLayout"
@@ -238,7 +252,9 @@
         <TextView
             android:id="@+id/textView6"
             style="@style/celltophead"
+            android:fontFamily="@font/roboto_medium_italic"
             android:text="Air quality"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tableLayout"
             app:layout_constraintHorizontal_bias="0.7"
             app:layout_constraintLeft_toLeftOf="@id/tableLayout"
@@ -249,7 +265,9 @@
         <TextView
             android:id="@+id/textView7"
             style="@style/celltophead"
+            android:fontFamily="@font/roboto_medium_italic"
             android:text="Visibility"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tableLayout"
             app:layout_constraintHorizontal_bias="0.013"
             app:layout_constraintLeft_toLeftOf="@id/tableLayout"
@@ -260,7 +278,9 @@
         <TextView
             android:id="@+id/textView8"
             style="@style/celltophead"
+            android:fontFamily="@font/roboto_medium_italic"
             android:text="Humidity"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/tableLayout"
             app:layout_constraintHorizontal_bias="0.674"
             app:layout_constraintLeft_toLeftOf="@id/tableLayout"
