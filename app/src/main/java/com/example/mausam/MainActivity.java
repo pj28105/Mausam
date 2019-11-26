@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 buildlocationRequest();
                 buildLocationCallback();
@@ -141,11 +141,11 @@ public class MainActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.placeName)).setText(placeName);
         ((TextView)findViewById(R.id.weatherTitle)).setText(showDetails[0]);
         ((TextView)findViewById(R.id.windSpeed)).setText(format(showDetails[2])+" m/s");
-        ((TextView)findViewById(R.id.pressure)).setText(format(showDetails[1]));
+        ((TextView)findViewById(R.id.pressure)).setText(format(showDetails[1]) + " hPa");
         ((TextView)findViewById(R.id.UVIndex)).setText(format(showDetails[7]));
-        ((TextView)findViewById(R.id.airQuality)).setText(format(showDetails[8]));
-        ((TextView)findViewById(R.id.visibility)).setText(format(showDetails[6]));
-        ((TextView)findViewById(R.id.humidity)).setText(format(showDetails[9]));
+        ((TextView)findViewById(R.id.airQuality)).setText(format(showDetails[8]) + " ppm");
+        ((TextView)findViewById(R.id.visibility)).setText(format(showDetails[6]) + " m");
+        ((TextView)findViewById(R.id.humidity)).setText(format(showDetails[9]) + "%");
         showDetails[5] = "@drawable/"+showDetails[5];
         int imageResource = getResources().getIdentifier(showDetails[5], null, getPackageName());
         Drawable drawable = ContextCompat.getDrawable(this, imageResource);
