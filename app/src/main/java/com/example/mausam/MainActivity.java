@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         7)UV Index
         8)Air Quality Index
         9)Relative Humidity
-        Location will be updated after 15mins and 10km displacement
+        Location will be updated after 15secs and 10km displacement
      */
 
     // Response for Request
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void getWeather(Location location) {
-        Log.i("Update","Updating weather deatails");
+        // Log.i("Update","Updating weather deatails");
         if(location == null){
             return;
         }
@@ -178,12 +178,12 @@ public class MainActivity extends AppCompatActivity {
         final int currentTime = Integer.parseInt(simpleDateFormat.format(Calendar.getInstance().getTime()));
 
         // Only PortraitMode
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Hiding Weather Layout at Startup
+        // Hiding Weather Layout at Startup For Splash Screen
         final ConstraintLayout weatherLayout = ((ConstraintLayout)findViewById(R.id.weatherLayout));
         weatherLayout.setVisibility(View.INVISIBLE);
 
@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
         iconWeather = (ImageView) findViewById(R.id.iconWeather);
         iconWeather.setVisibility(View.INVISIBLE);
 
+        // Splash Screen Startup
         final TextView introText = ((TextView)findViewById(R.id.introText));
         ((ImageView)findViewById(R.id.introImage)).setVisibility(View.VISIBLE);
         introText.setVisibility(View.VISIBLE);
@@ -216,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }.start();
 
-        //Request for Location
+        //Request to Access location
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         }else{
@@ -242,7 +243,8 @@ public class MainActivity extends AppCompatActivity {
     private void buildlocationRequest() {
         locationRequest = new LocationRequest();
         locationRequest.setSmallestDisplacement(10000);
-        locationRequest.setFastestInterval(1*1000);
+        // Get Location updates from other app's using location services
+        locationRequest.setFastestInterval(15*1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 
