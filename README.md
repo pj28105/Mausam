@@ -6,4 +6,4 @@
 ### Features -:
 * Detailed weather information, including 24-hour temperature forecasts
 * Severe weather alerts
-* Gives humidity percentage, wind speed, UV index, air quality, visibility, and the chance of precipitation
+* Provides humidity percentage, wind speed, UV index, air quality, visibility, and the chance of precipitation
